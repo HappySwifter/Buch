@@ -52,8 +52,24 @@
 	<div class="row">
 
 		<div class="col-xs-5">
-		  	<h1>My First Bootstrap Page</h1>
-  			<p>This is some text.</p> 
+		  	<h2><%=accountInfo.title%></h2>
+ 	        <table class="table table-hover">
+                <thead></th><th>Название</th><th>Сумма</th></tr></thead>
+                <tbody>
+
+                <% accountInfo.info.forEach(function(account) { %>
+                <tr>
+                    <td>
+                        <%=account.name%>
+                    </td>
+                    <td>
+                        <%=account.ammount%>
+                    </td>
+                </tr>
+                <% }) %>
+
+                </tbody>
+            </table>
 		</div>
 
 		<div class="col-xs-5 pull-right">
@@ -73,8 +89,27 @@
 		</div>
 
 		<div class="col-xs-5 pull-right">
-	  		<h1>My First Bootstrap Page</h1>
-  			<p>This is some text.</p> 
+			<h2><%=categories.title%></h2>
+	  		<table class="table table-hover">
+                <thead></th><th>Название</th><th>Потрачено</th><th>Лимит</th></tr></thead>
+                <tbody>
+
+                <% categories.info.forEach(function(category) { %>
+                <tr>
+                    <td>
+                        <%=category.name%>
+                    </td>
+                    <td>
+                        <%=category.spent%>
+                    </td>
+                    <td>
+                        <%=category.limit%>
+                    </td>
+                </tr>
+                <% }) %>
+
+                </tbody>
+            </table>
 		</div>
 
 	 </div>

@@ -1,49 +1,29 @@
-var mongoose = require('mongoose');
+var mysql = require('mysql');
 var gracefulShutdown;
-var dbURI = 'mongodb://localhost/Loc8r';
+// var dbURI = '192.168.1.7';
 
-if (process.env.NODE_ENV === 'production') {
-    dbURI = process.env.MONGOLAB_URI;
+// if (process.env.NODE_ENV === 'production') {
+//     dbURI = process.env.MONGOLAB_URI;
+// }
+
+
+var cachedConnection;
+
+function returnConnection() {
+    cachedConnection = cachedConnection ||
+        mysql.createConnection({
+            database: 'buchhalter',
+            host: 'localhost',
+            user: 'root',
+            password: '4005221395',
+            multipleStatements: true
+        });
+    return cachedConnection;
 }
-mongoose.connect(dbURI);
-
-// CONNECTION EVENTS
-mongoose.connection.on('connected', function() {
-    console.log('Mongoose connected to ' + dbURI);
-});
-mongoose.connection.on('error', function(err) {
-    console.log('Mongoose connection error: ' + err);
-});
-mongoose.connection.on('disconnected', function() {
-    console.log('Mongoose disconnected');
-});
-
-// CAPTURE APP TERMINATION / RESTART EVENTS
-// To be called when process is restarted or terminated
-gracefulShutdown = function(msg, callback) {
-    mongoose.connection.close(function() {
-        console.log('Mongoose disconnected through ' + msg);
-        callback();
-    });
+//
+module.exports = {
+    mysqlconn: returnConnection
 };
-// For nodemon restarts
-process.once('SIGUSR2', function() {
-    gracefulShutdown('nodemon restart', function() {
-        process.kill(process.pid, 'SIGUSR2');
-    });
-});
-// For app termination
-process.on('SIGINT', function() {
-    gracefulShutdown('app termination', function() {
-        process.exit(0);
-    });
-});
-// For Heroku app termination
-process.on('SIGTERM', function() {
-    gracefulShutdown('Heroku app termination', function() {
-        process.exit(0);
-    });
-});
 
-// BRING IN YOUR SCHEMAS & MODELS!
-require('./locations');
+
+//
