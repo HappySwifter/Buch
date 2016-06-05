@@ -25,6 +25,23 @@ module.exports.homelist = function(req, res) {
     });
 };
 
+
+module.exports.updateInfo = function(req, res) {
+    var action = req.body.name;
+    console.log('post action is - ' + action);
+    if (action == 'insertNewAccount') {
+        insertNewAccount(function() {
+            console.log('inserting done');
+            getAccounts(function(accounts, categories) {
+                console.log('sending new data');
+                res.send(accounts)
+           });
+        });
+    }
+
+};
+
+
 function getAccounts(handler) {
     var accounts = [];
     var categories = [];
@@ -35,10 +52,10 @@ function getAccounts(handler) {
             console.log('MySQL error: ' + err);
         })
         .on('result', function(row) {
-            if (row.type == "Доходы") {
+            if (row.type == "Доход") {
                  var account = new Account(row.id, row.ammount, row.name, row.userId, row.type, row.limit, row.spent);
                  accounts.push(account);
-            } else if (row.type == "Расходы") {
+            } else if (row.type == "Расход") {
                  var category = new Account(row.id, row.ammount, row.name, row.userId, row.type, row.limit, row.spent);
                  categories.push(category);
             }
@@ -48,6 +65,30 @@ function getAccounts(handler) {
             handler(accounts, categories);
         });
 
+}
+
+
+function insertNewAccount(handler) {
+
+    var set  = {
+        ammount: 300,
+        name: 'Процент',
+        userId: 0,
+        type: 'Доход'
+    };
+
+    var queryStr = 'INSERT INTO Account (ammount, name, userId, type) VALUES ?';
+    var query = mysqlconn.query(queryStr, set);
+    query
+        .on('error', function(err) {
+            console.log('MySQL error: ' + err);
+        })
+        .on('result', function(row) {
+            
+        })
+        .on('end', function(err) {
+            handler();
+        });
 }
 
 

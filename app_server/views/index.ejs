@@ -53,9 +53,10 @@
 
 		<div class="col-xs-5">
 		  	<h2><%=accountInfo.title%></h2>
+		  	<button type="button" class="btn btn-default", id="newElementTouched">Left</button>
  	        <table class="table table-hover">
                 <thead></th><th>Название</th><th>Сумма</th></tr></thead>
-                <tbody>
+                <tbody id="расходы">
 
                 <% accountInfo.info.forEach(function(account) { %>
                 <tr>
@@ -117,7 +118,19 @@
 </div>
 
 
+<script type="text/javascript">
+	
+	$('#newElementTouched').click(function() {
+    	var data = { name: 'insertNewAccount' };
+    	$.post('/', data, function(res) {
 
+    		$('#расходы').empty();
+   			 for (var data in res) {
+       			$('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
+  			  }
+    	});
+	});
+</script>
 
 
 
