@@ -87,8 +87,34 @@
 
 	<div class="row">
 
-		<div class="col-xs-5">
-		<h2>Транзакции</h2>
+
+<div class="col-xs-5">
+            <h2><%=categories.title%></h2>
+            <table class="table table-hover">
+                <thead></th><th>Название</th><th>Потрачено</th><th>Лимит</th></tr></thead>
+                <tbody>
+
+                <% categories.info.forEach(function(category) { %>
+                <tr>
+                    <td>
+                        <%=category.name%>
+                    </td>
+                    <td>
+                        <%=category.spent%>
+                    </td>
+                    <td>
+                        <%=category.limit%>
+                    </td>
+                </tr>
+                <% }) %>
+
+                </tbody>
+            </table>
+        </div>
+
+
+		<div class="col-xs-5 pull-right">
+		<h2>Расходы</h2>
 	  		<form class="form-inline" style="margin-top: 2%;">
 			  <div class="form-group">
 			    <input type="text" class="form-control" id="exampleInputName2" placeholder="Сумма">
@@ -139,33 +165,6 @@
 
 		</div>
 
-
-
-
-
-		<div class="col-xs-5 pull-right">
-			<h2><%=categories.title%></h2>
-	  		<table class="table table-hover">
-                <thead></th><th>Название</th><th>Потрачено</th><th>Лимит</th></tr></thead>
-                <tbody>
-
-                <% categories.info.forEach(function(category) { %>
-                <tr>
-                    <td>
-                        <%=category.name%>
-                    </td>
-                    <td>
-                        <%=category.spent%>
-                    </td>
-                    <td>
-                        <%=category.limit%>
-                    </td>
-                </tr>
-                <% }) %>
-
-                </tbody>
-            </table>
-		</div>
 
 	 </div>
 

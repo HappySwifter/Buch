@@ -41,8 +41,8 @@ module.exports.homelist = function(req, res) {
 module.exports.updateInfo = function(req, res) {
     var action = req.body.name;
     console.log('post action is - ' + action);
-    if (action == 'insertNewAccount') {
-        insertNewAccount(function() {
+    if (action == 'insertNewTransaction') {
+        insertNewTransaction(function() {
             console.log('inserting done');
             getAccounts(function(accounts, categories) {
                 console.log('sending new data');
@@ -98,7 +98,7 @@ function getTransactions(handler) {
 }
 
 
-function insertNewAccount(handler) {
+function insertNewTransaction(handler) {
 
     var set  = {
         ammount: 300,
@@ -107,7 +107,8 @@ function insertNewAccount(handler) {
         type: 'Доход'
     };
 
-    var queryStr = 'INSERT INTO Account (ammount, name, userId, type) VALUES ?';
+
+    var queryStr = 'CALL ';
     var query = mysqlconn.query(queryStr, [set]);
     query
         .on('error', function(err) {
