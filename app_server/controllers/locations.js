@@ -53,6 +53,26 @@ module.exports.updateInfo = function(req, res) {
 };
 
 
+module.exports.getCategories = function(req, res) {
+    var categories = [];
+     // mysqlconn.query("SELECT iduser, isdelete, isblocked, nameuser FROM v_user WHERE iddevice = ? LIMIT 1", UDID)
+
+    // var queryStr = 'SELECT name FROM Account WHERE Account.type = ?';
+    var query = mysqlconn.query('SELECT name FROM Account WHERE Account.type = ?', "Расход");
+    query
+        .on('error', function(err) {
+            console.log('MySQL error: ' + err);
+        })
+        .on('result', function(row) {
+             categories.push(row.name);
+        })
+        .on('end', function(err) {
+            console.log(categories);
+            res.send(categories);
+        });
+};
+
+
 function getAccounts(handler) {
     var accounts = [];
     var categories = [];
@@ -87,6 +107,8 @@ function getTransactions(handler) {
         })
         .on('result', function(row) {
              var transaction = new Transaction(row.id, row.source, row.destination, row.userId, row.date, row.amount);
+              
+
               console.log(row);
               transactions.push(transaction);
             
@@ -100,16 +122,13 @@ function getTransactions(handler) {
 
 function insertNewTransaction(handler) {
 
-    var set  = {
-        ammount: 300,
-        name: 'Процент',
-        userId: 0,
-        type: 'Доход'
-    };
+
+// amount int, sourceId int, destinationId int, userId int, transDate date
 
 
-    var queryStr = 'CALL ';
-    var query = mysqlconn.query(queryStr, [set]);
+
+    var queryStr = "CALL InsertTransaction("+ 300 +", "+ 5 +", "+ 5 +", "+ 0 +")";
+    var query = mysqlconn.query(queryStr);
     query
         .on('error', function(err) {
             console.log('MySQL error: ' + err);
@@ -122,6 +141,11 @@ function insertNewTransaction(handler) {
         });
 }
 
+
+function timeUTC(timeZ) {
+    if (!timeZ) return (new Date()).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    return timeZ.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+}
 
 /* GET 'Add review' page */
 // module.exports.addReview = function(req, res) {

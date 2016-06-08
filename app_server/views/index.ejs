@@ -96,15 +96,11 @@
 
 
 				<div class="btn-group">
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false", id="categoryListTouched">
 				    Категория <span class="caret"></span>
 				  </button>
-				  <ul class="dropdown-menu">
+				  <ul class="dropdown-menu", id="dropdownCategories">
 				    <li><a href="#">Action</a></li>
-				    <li><a href="#">Another action</a></li>
-				    <li><a href="#">Something else here</a></li>
-				    <li role="separator" class="divider"></li>
-				    <li><a href="#">Separated link</a></li>
 				  </ul>
 				</div>
 
@@ -155,6 +151,29 @@
   			  }
     	});
 	});
+
+    $('#categoryList').click(function() {
+        alert('dd')
+        var data = { name: 'insertNewTransaction' };
+        $.post('/', data, function(res) {
+
+            $('#расходы').empty();
+             for (var data in res) {
+                $('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
+              }
+        });
+    });
+
+    $('#categoryListTouched').click(function() {
+        $.post('/categories', function(res) {
+            $('#dropdownCategories').empty();
+             for (var data in res) {
+                $('#dropdownCategories').append('<li><a href="#">'+res[data]+'</a></li>');
+              }
+        });
+    });
+
+    
 </script>
 
 
