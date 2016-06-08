@@ -13,15 +13,27 @@ function Account(id, ammount, name, userId, type, limit, spent) {
     this.spent = spent;
 }
 
+function Transaction(id, source, destination, userId, date, amount) {
+    this.id = id;
+    this.source = source;
+    this.destination = destination;
+    this.userId = userId;
+    this.date = date;
+    this.amount = amount;
+}
 
 /* GET 'home' page */
 module.exports.homelist = function(req, res) {
     getAccounts(function(accounts, categories) {
-        console.log(accounts);
-        res.render('index', {
+        getTransactions(function(transactions) {
+            // console.log(accounts);
+            res.render('index', {
                 accountInfo: {title: 'Доходы', info: accounts},
-                categories: {title: 'Расходы', info: categories},
+                categories: {title: 'Лимиты', info: categories},
+                transactions: {title: 'Транзакции', info: transactions},
             });
+        });
+
     });
 };
 
@@ -38,7 +50,6 @@ module.exports.updateInfo = function(req, res) {
            });
         });
     }
-
 };
 
 
@@ -61,10 +72,29 @@ function getAccounts(handler) {
             }
         })
         .on('end', function(err) {
-            console.log(accounts);
+            // console.log(accounts);
             handler(accounts, categories);
         });
+}
 
+function getTransactions(handler) {
+    var transactions = [];
+    var getTransactionsQuery = 'CALL select_transactions';
+    var query = mysqlconn.query(getTransactionsQuery);
+    query
+        .on('error', function(err) {
+            console.log('MySQL error: ' + err);
+        })
+        .on('result', function(row) {
+             var transaction = new Transaction(row.id, row.source, row.destination, row.userId, row.date, row.amount);
+              console.log(row);
+              transactions.push(transaction);
+            
+        })
+        .on('end', function(err) {
+            // console.log(transactions);
+            handler(transactions);
+        });
 }
 
 
@@ -78,7 +108,7 @@ function insertNewAccount(handler) {
     };
 
     var queryStr = 'INSERT INTO Account (ammount, name, userId, type) VALUES ?';
-    var query = mysqlconn.query(queryStr, set);
+    var query = mysqlconn.query(queryStr, [set]);
     query
         .on('error', function(err) {
             console.log('MySQL error: ' + err);
