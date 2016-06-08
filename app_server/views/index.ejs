@@ -3,57 +3,23 @@
 <head>
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta name="keywords" content="семейный бюджет, личные финансы">
+  <meta name="description" content="Одностраничное веб-приложение для учета личных финансов и планирования семейного бюджета. Доступны следующие функции: учет доходов, учет сбережений, установка лимитов по расходам и учет расходов по категориям. Страница состоит из 4 разделов: доходы, сбережения, лимиты, расходы. По умолчанию отображаются по 5 последних записей в доходах и сбережениях и по 7 последних записей в лимитах и расходах.">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel='stylesheet' href='style.css' />
-
    <script src='http://code.jquery.com/jquery-1.7.1.min.js'></script>
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
+
 <body>
-<!-- перенести изменения-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="container">
 
 	<div class="row">
 
 		<div class="col-xs-5">
 		  	<h2><%=accountInfo.title%></h2>
-		  	<button type="button" class="btn btn-default">Left</button>
+		  	<!-- <button type="button" class="btn btn-default">Left</button> -->
  	        <table class="table table-hover">
                 <thead></th><th>Название</th><th>Сумма</th></tr></thead>
                 <tbody id="расходы">
@@ -74,8 +40,14 @@
 		</div>
 
 		<div class="col-xs-5 pull-right">
-	  		<h1>My First Bootstrap Page</h1>
-  			<p>This is some text.</p> 
+    <!--  view 2 = Сбережения, разделитель, кнопки - дата, сумма, цель
+поле ввода, подсветка, курсор: дд.мм.гг - 0,00 р., квартира - высветленный шрифт
+последние 5 операций - таблица, шрифт черный. Кнопка Календарь
+нажатие на строку  -> поле, подсветка, курсор
+функции кнопок - фильтр +/-, подсветка кнопки при +
+Строка Итого, сумма, дата, кнопка календарь. По умолчанию - сумма отображенных.-->
+	  		<h2>Сбережения</h2>
+  			<p></p> 
 		</div>
 
 	 </div>
