@@ -24,6 +24,3 @@ function returnConnection() {
 module.exports = {
     mysqlconn: returnConnection
 };
-
-
-//

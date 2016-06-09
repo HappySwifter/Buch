@@ -22,7 +22,7 @@
 		  	<!-- <button type="button" class="btn btn-default">Left</button> -->
  	        <table class="table table-hover">
                 <thead></th><th>Название</th><th>Сумма</th></tr></thead>
-                <tbody id="расходы">
+                <tbody id="доходы">
 
                 <% accountInfo.info.forEach(function(account) { %>
                 <tr>
@@ -89,16 +89,14 @@
 		<h2>Расходы</h2>
 	  		<form class="form-inline" style="margin-top: 2%;">
 			  <div class="form-group">
-			    <input type="text" class="form-control" id="exampleInputName2" placeholder="Сумма">
+			    <input type="number" step="50" min="0" class="form-control" id="outgoungAmount" placeholder="Сумма">
 			  </div>
 			  <div class="form-group">
 
 
 
 				<div class="btn-group">
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false", id="categoryListTouched">
-				    Категория <span class="caret"></span>
-				  </button>
+				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false", id="categoryListTouched">Категория <span class="caret"></span></button>
 				  <ul class="dropdown-menu", id="dropdownCategories">
 				    <li><a href="#">Action</a></li>
 				  </ul>
@@ -110,7 +108,7 @@
 
 			</form>
 
-			<table class="table table-hover">
+			<table class="table table-hover", id="расходы">
                 <thead></th><th>Потрачено</th><th>Категория</th><th>Дата</th></tr></thead>
                 <tbody>
 
@@ -142,13 +140,24 @@
 <script type="text/javascript">
 	
 	$('#newElementTouched').click(function() {
-    	var data = { name: 'insertNewTransaction' };
+       
+        var category =  $(".btn:first-child").text()
+        var outgoungAmount = $("#outgoungAmount").val()
+
+        if (!outgoungAmount || outgoungAmount == 0) {
+            alert("Введите сумму")
+        }
+    	var data = {
+             name: 'insertNewTransaction',
+             category: category,
+             outgoungAmount: outgoungAmount
+         };
     	$.post('/', data, function(res) {
 
     		$('#расходы').empty();
-   			 for (var data in res) {
+   			for (var data in res) {
        			$('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
-  			  }
+  		    }
     	});
 	});
 
@@ -157,21 +166,38 @@
         var data = { name: 'insertNewTransaction' };
         $.post('/', data, function(res) {
 
-            $('#расходы').empty();
-             for (var data in res) {
-                $('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
-              }
+            // $('#расходы').empty();
+            //  for (var data in res) {
+            //     $('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
+            //   }
         });
     });
 
     $('#categoryListTouched').click(function() {
         $.post('/categories', function(res) {
+
             $('#dropdownCategories').empty();
              for (var data in res) {
-                $('#dropdownCategories').append('<li><a href="#">'+res[data]+'</a></li>');
-              }
+                $('#dropdownCategories').append('<li><a href="#">'+res[data].name+'</a></li>');
+            }
+
+            // $('#расходы').empty();
+            // for (var data in res) {
+            //     $('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
+            // }
+     
         });
     });
+
+    $(function() {
+        $(".dropdown-menu").on('click', 'li a', function(){
+            $(".btn:first-child").text($(this).text());
+            $(".btn:first-child").val($(this).text());
+
+        });
+    });
+
+
 
     
 </script>

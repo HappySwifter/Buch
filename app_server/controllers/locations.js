@@ -24,47 +24,37 @@ function Transaction(id, source, destination, userId, date, amount) {
 
 /* GET 'home' page */
 module.exports.homelist = function(req, res) {
-    getAccounts(function(accounts, categories) {
-        getTransactions(function(transactions) {
-            // console.log(accounts);
-            res.render('index', {
-                accountInfo: {title: 'Доходы', info: accounts},
-                categories: {title: 'Лимиты', info: categories},
-                transactions: {title: 'Транзакции', info: transactions},
-            });
-        });
-
+    getMainData(function(data) {
+        res.render('index', data);
     });
+
 };
 
 
 module.exports.updateInfo = function(req, res) {
     var action = req.body.name;
-    console.log('post action is - ' + action);
-    if (action == 'insertNewTransaction') {
-        insertNewTransaction(function() {
-            console.log('inserting done');
-            getAccounts(function(accounts, categories) {
-                console.log('sending new data');
-                res.send(accounts)
-           });
-        });
-    }
+    console.log('insert new outgoing');
+    insertNewTransaction(req.body, function() {
+        console.log('inserting done');
+       //  getAccounts(function(accounts, categories) {
+       //      console.log('sending new data');
+       //      res.send(accounts)
+       // });
+    });
 };
 
 
 module.exports.getCategories = function(req, res) {
     var categories = [];
-     // mysqlconn.query("SELECT iduser, isdelete, isblocked, nameuser FROM v_user WHERE iddevice = ? LIMIT 1", UDID)
 
-    // var queryStr = 'SELECT name FROM Account WHERE Account.type = ?';
-    var query = mysqlconn.query('SELECT name FROM Account WHERE Account.type = ?', "Расход");
+    var query = mysqlconn.query('SELECT * FROM Account WHERE Account.type = ?', "Расход");
     query
         .on('error', function(err) {
             console.log('MySQL error: ' + err);
         })
         .on('result', function(row) {
-             categories.push(row.name);
+            var category = new Account(row.accountId, row.ammount, row.name, row.userId, row.type, row.limit, row.spent);
+            categories.push(category);
         })
         .on('end', function(err) {
             console.log(categories);
@@ -84,10 +74,10 @@ function getAccounts(handler) {
         })
         .on('result', function(row) {
             if (row.type == "Доход") {
-                 var account = new Account(row.id, row.ammount, row.name, row.userId, row.type, row.limit, row.spent);
+                 var account = new Account(row.accountId, row.ammount, row.name, row.userId, row.type, row.limit, row.spent);
                  accounts.push(account);
             } else if (row.type == "Расход") {
-                 var category = new Account(row.id, row.ammount, row.name, row.userId, row.type, row.limit, row.spent);
+                 var category = new Account(row.accountId, row.ammount, row.name, row.userId, row.type, row.limit, row.spent);
                  categories.push(category);
             }
         })
@@ -120,31 +110,62 @@ function getTransactions(handler) {
 }
 
 
-function insertNewTransaction(handler) {
+function insertNewTransaction(data, handler) {
 
 
-// amount int, sourceId int, destinationId int, userId int, transDate date
+    // amount int, sourceId int, destinationId int, userId int
 
+    console.log(data)
 
-
-    var queryStr = "CALL InsertTransaction("+ 300 +", "+ 5 +", "+ 5 +", "+ 0 +")";
-    var query = mysqlconn.query(queryStr);
-    query
-        .on('error', function(err) {
-            console.log('MySQL error: ' + err);
-        })
-        .on('result', function(row) {
-            
-        })
-        .on('end', function(err) {
-            handler();
-        });
+    getAccounIdByName(data.category, function(catId) {
+        var query = mysqlconn.query("CALL InsertTransaction("+ data.outgoungAmount +", "+ 5 +", ?, "+ 0 +")", catId);
+        query
+            .on('error', function(err) {
+                console.log('MySQL error: ' + err);
+            })
+            .on('result', function(row) {
+                
+            })
+            .on('end', function(err) {
+                handler();
+            });
+    });
+    
 }
 
 
 function timeUTC(timeZ) {
     if (!timeZ) return (new Date()).toISOString().replace(/T/, ' ').replace(/\..+/, '');
     return timeZ.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+}
+
+function getAccounIdByName(name, handler) {
+    var query = mysqlconn.query('SELECT accountId FROM Account WHERE Account.name = ?', name);
+    query
+        .on('error', function(err) {
+            console.log('MySQL error: ' + err);
+        })
+        .on('result', function(row) {
+            handler(row.accountId);
+        })
+        .on('end', function(err) {
+            // console.log(accounts);
+            
+        });
+}
+
+function getMainData(handler) {
+    getAccounts(function(accounts, categories) {
+        getTransactions(function(transactions) {
+            var data = {
+                accountInfo: {title: 'Доходы', info: accounts},
+                categories: {title: 'Лимиты', info: categories},
+                transactions: {title: 'Транзакции', info: transactions},
+            };
+            handler(data);
+        });
+
+    });
 }
 
 /* GET 'Add review' page */
