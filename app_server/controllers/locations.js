@@ -32,15 +32,18 @@ module.exports.homelist = function(req, res) {
 
 
 module.exports.updateInfo = function(req, res) {
-    var action = req.body.name;
-    console.log('insert new outgoing');
-    insertNewTransaction(req.body, function() {
-        console.log('inserting done');
-       //  getAccounts(function(accounts, categories) {
-       //      console.log('sending new data');
-       //      res.send(accounts)
-       // });
-    });
+    var actionName = req.body.name;
+    console.log('apply action');
+    console.log(actionName)
+    if (actionName == 'insertNewCategory') {
+        insertNewCategory(req.body, function() {
+            console.log('insertNewCategory done');
+        });
+    } else if (actionName == 'insertNewTransaction') {
+        insertNewOutgoing(req.body, function() {
+            console.log('insertNewOutgoing done');
+        });
+    }
 };
 
 
@@ -110,13 +113,32 @@ function getTransactions(handler) {
 }
 
 
-function insertNewTransaction(data, handler) {
-
-
-    // amount int, sourceId int, destinationId int, userId int
-
+function insertNewCategory(data, handler) {
     console.log(data)
+    var insertData = {
+        name: data.categoryName,
+        limit: data.categoryLimit,
+        spent: 0,
+        type: "Расход",
+        userId: 0
+    }
 
+    var query = mysqlconn.query("INSERT INTO Account SET ?", insertData);
+    query
+        .on('error', function(err) {
+            console.log('MySQL error: ' + err);
+        })
+        .on('result', function(row) {
+            
+        })
+        .on('end', function(err) {
+            handler();
+        });
+}
+
+
+function insertNewOutgoing(data, handler) {
+    console.log(data)
     getAccounIdByName(data.category, function(catId) {
         var query = mysqlconn.query("CALL InsertTransaction("+ data.outgoungAmount +", "+ 5 +", ?, "+ 0 +")", catId);
         query
@@ -130,7 +152,6 @@ function insertNewTransaction(data, handler) {
                 handler();
             });
     });
-    
 }
 
 

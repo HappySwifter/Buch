@@ -17,9 +17,8 @@
 
 	<div class="row">
 
-		<div class="col-xs-5">
+		<div class="col-xs-5"> <!-- ДОХОДЫ -->
 		  	<h2><%=accountInfo.title%></h2>
-		  	<!-- <button type="button" class="btn btn-default">Left</button> -->
  	        <table class="table table-hover">
                 <thead></th><th>Название</th><th>Сумма</th></tr></thead>
                 <tbody id="доходы">
@@ -39,7 +38,7 @@
             </table>
 		</div>
 
-		<div class="col-xs-5 pull-right">
+		<div class="col-xs-5 pull-right"> <!-- СБЕРЕЖЕНИЯ -->
     <!--  view 2 = Сбережения, разделитель, кнопки - дата, сумма, цель
 поле ввода, подсветка, курсор: дд.мм.гг - 0,00 р., квартира - высветленный шрифт
 последние 5 операций - таблица, шрифт черный. Кнопка Календарь
@@ -60,76 +59,57 @@
 	<div class="row">
 
 
-<div class="col-xs-5">
+<div class="col-xs-5"> <!-- ЛИМИТЫ -->
     <div>
         <h2><%=categories.title%></h2>
-         <button type="button" class="btn btn-primary", id="showInsertCategoryField">+</button>
+         <button type="button" class="btn btn-primary", id="showInsertCategoryField">+</button> <!-- КНОПКА + -->
     </div>
        
+    <form class="form-inline", style="margin-top: 1%;", id="insertCategoryField", hidden="true">
+        <input type="text" class="form-control" id="categoryName" placeholder="Название">
+        <input type="number" step="100" min="0" class="form-control" id="categoryLimit" placeholder="Лимит">
+        <button type="button" class="btn btn-primary", id="insertNewCategory">Внести</button>
+    </form>
+
+    <table class="table table-hover", id="Лимиты">
+        <thead></th><th>Название</th><th>Потрачено</th><th>Лимит</th></tr></thead>
+        <tbody>
+
+        <% categories.info.forEach(function(category) { %>
+        <tr>
+            <td>
+                <%=category.name%>
+            </td>
+            <td>
+                <%=category.spent%>
+            </td>
+            <td>
+                <%=category.limit%>
+            </td>
+        </tr>
+        <% }) %>
+
+        </tbody>
+    </table>
+ </div>
 
 
-
-        <form class="form-inline", style="margin-top: 2%;", id="insertCategoryField", hidden="true">
-            <div class="form-group">
-                <input type="text" class="form-control" id="outgoungAmount" placeholder="Название">
-                <input type="number" step="100" min="0" class="form-control" id="outgoungAmount" placeholder="Лимит">
-
-            </div>
-            <div class="form-group">
-                <div class="btn-group">
-                    <ul class="dropdown-menu", id="dropdownCategories">
-                        <li><a href="#">Action</a></li>
-                    </ul>
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary", id="newElementTouched">Внести</button>
-        </form>
-
-
-
-            <table class="table table-hover">
-                <thead></th><th>Название</th><th>Потрачено</th><th>Лимит</th></tr></thead>
-                <tbody>
-
-                <% categories.info.forEach(function(category) { %>
-                <tr>
-                    <td>
-                        <%=category.name%>
-                    </td>
-                    <td>
-                        <%=category.spent%>
-                    </td>
-                    <td>
-                        <%=category.limit%>
-                    </td>
-                </tr>
-                <% }) %>
-
-                </tbody>
-            </table>
-        </div>
-
-
-		<div class="col-xs-5 pull-right">
-		<h2>Расходы</h2>
+		<div class="col-xs-5 pull-right"> <!-- РАСХОДЫ -->
+		     <h2>Расходы</h2>
 	  		<form class="form-inline" style="margin-top: 2%;">
 			  <div class="form-group">
 			    <input type="number" step="50" min="0" class="form-control" id="outgoungAmount" placeholder="Сумма">
 			  </div>
 			  <div class="form-group">
 
-
-
 				<div class="btn-group">
 				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false", id="categoryListTouched">Категория <span class="caret"></span></button>
 				  <ul class="dropdown-menu", id="dropdownCategories">
-				    <li><a href="#">Action</a></li>
 				  </ul>
 				</div>
 
-
 			  </div>
-			  <button type="button" class="btn btn-primary", id="newElementTouched">Внести</button>
+			  <button type="button" class="btn btn-primary", id="insertNewTransaction">Внести</button>
 
 			</form>
 
@@ -153,73 +133,23 @@
 
                 </tbody>
             </table>
-
 		</div>
 
 
 	 </div>
-
-     <!-- Button trigger modal -->
-
-
-
-
 
 </div>
 
 
 <script type="text/javascript">
 	
-	$('#newElementTouched').click(function() {
-       
-        var category =  $(".btn:first-child").text()
-        var outgoungAmount = $("#outgoungAmount").val()
 
-        if (!outgoungAmount || outgoungAmount == 0) {
-            alert("Введите сумму")
-        }
-    	var data = {
-             name: 'insertNewTransaction',
-             category: category,
-             outgoungAmount: outgoungAmount
-         };
-    	$.post('/', data, function(res) {
 
-    		$('#расходы').empty();
-   			for (var data in res) {
-       			$('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
-  		    }
-    	});
-	});
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// ЛИМИТЫ /////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#categoryList').click(function() {
-        alert('dd')
-        var data = { name: 'insertNewTransaction' };
-        $.post('/', data, function(res) {
-
-            // $('#расходы').empty();
-            //  for (var data in res) {
-            //     $('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
-            //   }
-        });
-    });
-
-    $('#categoryListTouched').click(function() {
-        $.post('/categories', function(res) {
-
-            $('#dropdownCategories').empty();
-             for (var data in res) {
-                $('#dropdownCategories').append('<li><a href="#">'+res[data].name+'</a></li>');
-            }
-
-            // $('#расходы').empty();
-            // for (var data in res) {
-            //     $('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
-            // }
-     
-        });
-    });
-
+    // показать поле создания новой категории
     $('#showInsertCategoryField').click(function() {
         $('#insertCategoryField').toggle()
         
@@ -232,8 +162,54 @@
         });
     });
 
-    
 
+    // создание новой категории расходов
+    $('#insertNewCategory').click(function() {
+        var categoryName =  $("#categoryName").val()
+        var categoryLimit = $("#categoryLimit").val()
+
+        if (!categoryName || !categoryLimit) {
+            alert("Заполните поля")
+            return
+        }
+        var data = {
+             name: 'insertNewCategory',
+             categoryName: categoryName,
+             categoryLimit: categoryLimit
+         };
+        console.log(data)
+        $.post('/', data, function(res) {
+
+            $('#categoryName').val("");
+            $('#categoryLimit').val("");
+
+            for (var data in res) {
+                $('#Лимиты').append('<tr><td>'+res[data].name+'</td><td>'+res[data].amount+'</td><td>'+res[data].limit+'</td></tr>');
+            }
+        });
+    });
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////// РАСХОДЫ ////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // dropdown показа категорий
+    $('#categoryListTouched').click(function() {
+        $.post('/categories', function(res) {
+            $('#dropdownCategories').empty();
+                for (var index in res) {
+                    $('#dropdownCategories').append('<li><a href="#">'+res[index].name+'</a></li>');
+                }     
+        });
+    });
+
+    // выбор категории из списка
     $(function() {
         $(".dropdown-menu").on('click', 'li a', function(){
             $(".btn:first-child").text($(this).text());
@@ -242,7 +218,32 @@
         });
     });
 
+    // создание новой транзакции
+    $('#insertNewTransaction').click(function() {
+        var category =  $(".btn:first-child").val()
+        var outgoungAmount = $("#outgoungAmount").val()
+        if (!outgoungAmount || outgoungAmount == 0) {
+            alert("Введите сумму")
+            return
+        }
+        var data = {
+             name: 'insertNewTransaction',
+             category: category,
+             outgoungAmount: outgoungAmount
+         };
+         console.log(data)
 
+        $.post('/', data, function(res) {
+
+            $('#расходы').empty();
+            for (var data in res) {
+                $('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
+            }
+        });
+    });
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     
 </script>
