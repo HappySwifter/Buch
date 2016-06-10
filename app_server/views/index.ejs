@@ -15,6 +15,14 @@
 <body>
 <div class="container">
 
+<div id="customAlert">
+    
+</div>
+
+
+
+
+
 	<div class="row">
 
 		<div class="col-xs-5"> <!-- ДОХОДЫ -->
@@ -81,6 +89,9 @@
                 <%=category.name%>
             </td>
             <td>
+            <div class="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 50%;">60%</div>
+            </div>
                 <%=category.spent%>
             </td>
             <td>
@@ -152,7 +163,6 @@
     // показать поле создания новой категории
     $('#showInsertCategoryField').click(function() {
         $('#insertCategoryField').toggle()
-        
         $.post('/categories', function(res) {
 
             $('#dropdownCategories').empty();
@@ -169,7 +179,7 @@
         var categoryLimit = $("#categoryLimit").val()
 
         if (!categoryName || !categoryLimit) {
-            alert("Заполните поля")
+            showAlert("Заполните поля")
             return
         }
         var data = {
@@ -223,7 +233,7 @@
         var category =  $(".btn:first-child").val()
         var outgoungAmount = $("#outgoungAmount").val()
         if (!outgoungAmount || outgoungAmount == 0) {
-            alert("Введите сумму")
+            showAlert("Введите сумму")
             return
         }
         var data = {
@@ -246,7 +256,16 @@
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     
+
+    ////// HELPERS ////////
+
+    function showAlert(text) {
+        var alert = $('<div class="alert alert-warning alert-dismissible" role="alert" style="margin-top: 2%;><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>  '+text+'</div>')
+        $('#customAlert').append(alert)
+    }
 </script>
+
+
 
 
 <!--         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
