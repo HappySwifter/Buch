@@ -118,10 +118,14 @@
                 <%=category.name%>
             </td>
             <td>
-            <div class="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" style="width: 50%;">60%</div>
-            </div>
-                <%=category.spent%>
+<!--               <div class="progress">
+                  <div class="progress-bar progress-bar-success" role="progressbar" style="width: 90%;"><%=category.spent%></div>
+              </div> -->
+
+              <div class="progress" data-amount=<%=category.spent * 100 / category.limit%>>
+                 <div class="amount"></div>
+              </div>
+
             </td>
             <td>
                 <%=category.limit%>
@@ -372,6 +376,31 @@
   });
 
 });
+
+
+
+ $(document).ready(function () {
+    var dataval = parseInt($('.progress').attr("data-amount"));
+    if (dataval < 100) {
+        $('.progress .amount').css("width", 100 - dataval + "%");
+    }
+
+  /*FOR DEMO ONLY*/
+    $('#increase').click(function () {
+        modifyProgressVal(1);
+    });
+    $('#decrease').click(function () {
+        modifyProgressVal(-1);
+    });
+    function modifyProgressVal(type) {
+        dataval = parseInt($('.progress').attr("data-amount"));
+        if (type == 1) dataval = Math.min(100,dataval + 10)
+        else if (type == -1) dataval = Math.max(0,dataval - 10);
+        $('.progress .amount').css("width", 100 - dataval + "%");
+        $('.progress').attr("data-amount", dataval);
+    }
+});
+
 
 
 </script>
