@@ -25,6 +25,7 @@ function Transaction(id, source, destination, userId, date, amount) {
 /* GET 'home' page */
 module.exports.homelist = function(req, res) {
     getMainData(function(data) {
+        console.log('sending home list');
         res.render('index', data);
     });
 
@@ -102,7 +103,7 @@ function getTransactions(handler) {
              var transaction = new Transaction(row.id, row.source, row.destination, row.userId, row.date, row.amount);
               
 
-              console.log(row);
+              // console.log(row);
               transactions.push(transaction);
             
         })
