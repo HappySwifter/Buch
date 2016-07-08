@@ -127,11 +127,17 @@
               </div>
 
             </td>
-            <td>
+            <td class="значЛимита">
                 <%=category.limit%>
             </td>
         </tr>
         <% }) %>
+
+        <tr class="ИТОГО">
+           <td><b>ИТОГО:</b></td>
+           <td></td>
+           <td class="строкаИТОГО"><Итого:</td>
+        </tr>
 
         </tbody>
     </table>
@@ -158,25 +164,31 @@
 			</form>
 
 			<table class="table table-hover", id="расходы">
-                <thead></th><th>Потрачено</th><th class="filter-select filter-exact" data-placeholder="Выберите">Категория</th><th>Дата</th></tr></thead>
-                <tbody>
+          <thead></th><th>Потрачено</th><th class="filter-select filter-exact" data-placeholder="Выберите">Категория</th><th>Дата</th></tr></thead>
+          <tbody>
 
-                <% transactions.info.forEach(function(transaction) { %>
-                <tr>
-                    <td>
-                        <%=transaction.amount%>
-                    </td>
-                    <td>
-                        <%=transaction.destination%>
-                    </td>
-                    <td>
-                        <%=transaction.date%>
-                    </td>
-                </tr>
-                <% }) %>
+          <% transactions.info.forEach(function(transaction) { %>
+          <tr>
+              <td class="значРасхода">
+                  <%=transaction.amount%>
+              </td>
+              <td>
+                  <%=transaction.destination%>
+              </td>
+              <td>
+                  <%=transaction.date%>
+              </td>
+          </tr>
+          <% }) %>
 
-                </tbody>
-            </table>
+          <tr class="paсходыИТОГО">
+             <td><b>ИТОГО:</b></td>
+             <td></td>
+             <td class="строкаИТОГО">0</td>
+          </tr>
+
+          </tbody>
+       </table>
 		</div>
 
 
@@ -187,7 +199,10 @@
 
 <script type="text/javascript">
 	
-
+    $(document).ready(function(){
+      вычислитьСуммуЛимитов();
+      вычислитьСуммуРасходов();
+    });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////// ЛИМИТЫ /////////////////////////////////////////////////
@@ -296,6 +311,34 @@
         var alert = $('<div class="alert alert-warning alert-dismissible" role="alert" style="margin-top: 2%;><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>  '+text+'</div>')
         $('#customAlert').append(alert)
     }
+
+    function вычислитьСуммуЛимитов() {
+      var total = 0;
+      var $dataRows=$("#Лимиты tr:not('.ИТОГО')");
+
+      $dataRows.each(function() {
+          $(this).find('.значЛимита').each(function(i){        
+              total+=parseInt( $(this).html());
+          });
+      });
+      $("#Лимиты td.строкаИТОГО").html("<b>" +total+ "</b>");
+    }
+
+          
+    function вычислитьСуммуРасходов() {
+      var total = 0;
+      var $dataRows=$("#расходы tr:not('.paсходыИТОГО')");
+
+      $dataRows.each(function() {
+          $(this).find('.значРасхода').each(function(i){        
+              total+=parseInt( $(this).html());
+          });
+      });
+      $("#расходы td.строкаИТОГО").html("<b>" +total+ "</b>");
+    }
+
+
+
 
 
     $(function() {
