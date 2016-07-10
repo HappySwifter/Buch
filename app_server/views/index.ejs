@@ -33,11 +33,6 @@
 
 
 
-test
-
-
-
-
 
 
 
@@ -117,15 +112,8 @@ test
             <td>
                 <%=category.name%>
             </td>
-            <td>
-<!--               <div class="progress">
-                  <div class="progress-bar progress-bar-success" role="progressbar" style="width: 90%;"><%=category.spent%></div>
-              </div> -->
-
-              <div class="progress" data-amount=<%=category.spent * 100 / category.limit%>>
-                 <div class="amount"></div>
-              </div>
-
+            <td class="значПотрачено">
+              <%=category.spent%>
             </td>
             <td class="значЛимита">
                 <%=category.limit%>
@@ -135,8 +123,8 @@ test
 
         <tr class="ИТОГО">
            <td><b>ИТОГО:</b></td>
-           <td></td>
-           <td class="строкаИТОГО"><Итого:</td>
+           <td class="строкаИтогоПотрачено"></td>
+           <td class="строкаИтогоЛимит"><Итого:</td>
         </tr>
 
         </tbody>
@@ -200,6 +188,7 @@ test
 <script type="text/javascript">
 	
     $(document).ready(function(){
+      вычислитьСуммуТрат();
       вычислитьСуммуЛимитов();
       // вычислитьСуммуРасходов();
     });
@@ -293,10 +282,8 @@ test
 
         $.post('/', data, function(res) {
 
-            $('#расходы').empty();
-            for (var data in res) {
-                $('#расходы').append('<tr><td>'+res[data].name+'</td><td>'+res[data].ammount+'</td></tr>');
-            }
+          $("#outgoungAmount").val('')
+          $('#расходы').prepend('<tr><td>'+res.amount+'</td><td>'+res.destination+'</td></tr>');
         });
     });
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,21 +308,35 @@ test
               total+=parseInt( $(this).html());
           });
       });
-      $("#Лимиты td.строкаИТОГО").html("<b>" +total+ "</b>");
+      $("#Лимиты td.строкаИтогоЛимит").html("<b>" +total+ "</b>");
     }
 
-          
-    function вычислитьСуммуРасходов() {
+    function вычислитьСуммуТрат() {
       var total = 0;
-      var $dataRows=$("#расходы tr:not('.paсходыИТОГО')");
+      var $dataRows=$("#Лимиты tr:not('.ИТОГО')");
 
       $dataRows.each(function() {
-          $(this).find('.значРасхода').each(function(i){        
+          $(this).find('.значПотрачено').each(function(i){        
               total+=parseInt( $(this).html());
           });
       });
-      $("#расходы td.строкаИТОГО").html("<b>" +total+ "</b>");
+      $("#Лимиты td.строкаИтогоПотрачено").html("<b>" +total+ "</b>");
     }
+
+
+
+          
+    // function вычислитьСуммуРасходов() {
+    //   var total = 0;
+    //   var $dataRows=$("#расходы tr:not('.paсходыИТОГО')");
+
+    //   $dataRows.each(function() {
+    //       $(this).find('.значРасхода').each(function(i){        
+    //           total+=parseInt( $(this).html());
+    //       });
+    //   });
+    //   $("#расходы td.строкаИтогоПотрачено").html("<b>" +total+ "</b>");
+    // }
 
 
 
@@ -476,7 +477,7 @@ test
 
 
 
-<table> <!-- bootstrap classes added by the uitheme widget -->
+<!-- <table>
   <th colspan="7" class="ts-pager form-horizontal">
     <button type="button" class="btn prev"><i class="icon-arrow-left glyphicon glyphicon-backward"></i></button>
     <button type="button" class="btn next"><i class="icon-arrow-right glyphicon glyphicon-forward"></i></button>
@@ -485,7 +486,7 @@ test
       <option value="20">20</option>
     </select>
   </th>
-</table>
+</table> -->
 
 
 </body>

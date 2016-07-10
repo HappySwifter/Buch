@@ -41,8 +41,10 @@ module.exports.updateInfo = function(req, res) {
             console.log('insertNewCategory done');
         });
     } else if (actionName == 'insertNewTransaction') {
-        insertNewOutgoing(req.body, function() {
+        insertNewOutgoing(req.body, function(transaction) {
             console.log('insertNewOutgoing done');
+            console.log(transaction);
+            res.send(transaction);
         });
     }
 };
@@ -147,10 +149,14 @@ function insertNewOutgoing(data, handler) {
                 console.log('MySQL error: ' + err);
             })
             .on('result', function(row) {
-                
+                if (row.id != null) {
+                    console.log(row)
+                    var transaction = new Transaction(row.id, row.source, row.destination, row.userId, row.date, row.amount);
+                    handler(transaction);
+                }
             })
             .on('end', function(err) {
-                handler();
+
             });
     });
 }
